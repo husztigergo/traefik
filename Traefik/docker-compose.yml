@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+
+  traefik:
+    image: traefik:v1.7
+    command: --docker --docker.domain=whoami.syncee.co
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+      - ./acme.json:/acme.json
+    labels:
+      - "traefik.frontend.rule=Host:whoami.syncee.co"
+      - "traefik.port=8080"
+    container_name: traefik
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 9000:80
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+      - ./acme.json:/acme.json
+    labels:
+      - "traefik.frontend.rule=Host:nginx.syncee.co"
+      - "traefik.port=80"
+    container_name: nginx
+    restart: always
+ 
+networks:
+  proxy:
+    external: true
