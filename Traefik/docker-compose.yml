@@ -4,7 +4,7 @@ services:
 
   traefik:
     image: traefik:v1.7
-    command: --docker --docker.domain=whoami.syncee.co
+    command: --docker --docker.domain=your.domain.com
     ports:
       - 80:80
       - 443:443
@@ -15,7 +15,7 @@ services:
       - ./traefik.toml:/traefik.toml
       - ./acme.json:/acme.json
     labels:
-      - "traefik.frontend.rule=Host:whoami.syncee.co"
+      - "traefik.frontend.rule=Host:your.domain.com"
       - "traefik.port=8080"
     container_name: traefik
     restart: always
@@ -31,7 +31,7 @@ services:
       - ./traefik.toml:/traefik.toml
       - ./acme.json:/acme.json
     labels:
-      - "traefik.frontend.rule=Host:nginx.syncee.co"
+      - "traefik.frontend.rule=Host:nginx.your.domain.com"
       - "traefik.port=80"
     container_name: nginx
     restart: always
