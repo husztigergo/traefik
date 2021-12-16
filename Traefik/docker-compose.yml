@@ -1,41 +1,14 @@
 version: '3'
 
 services:
-
   traefik:
-    image: traefik:v1.7
-    command: --docker --docker.domain=your.domain.com
+    image: "traefik:v2.5"
+    container_name: "traefik"
     ports:
-      - 80:80
-      - 443:443
-    networks:
-      - proxy
+      - "80:80"
+      - "443:443"
+      # (Optional) Expose Dashboard
+      - "8080:8080"  # Don't do this in production!
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
-      - ./acme.json:/acme.json
-    labels:
-      - "traefik.frontend.rule=Host:your.domain.com"
-      - "traefik.port=8080"
-    container_name: traefik
-    restart: always
-
-  nginx:
-    image: nginx:latest
-    ports:
-      - 9000:80
-    networks:
-      - proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik.toml:/traefik.toml
-      - ./acme.json:/acme.json
-    labels:
-      - "traefik.frontend.rule=Host:nginx.your.domain.com"
-      - "traefik.port=80"
-    container_name: nginx
-    restart: always
- 
-networks:
-  proxy:
-    external: true
+      - /etc/traefik:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
